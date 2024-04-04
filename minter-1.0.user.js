@@ -2,7 +2,7 @@
 // @name         minter
 // @description  Automatically mint coins if there are resources
 // @author       cdneee
-// @version      1.1
+// @version      1.11
 // @include      https://*/game.php*=snob*
 // ==/UserScript==
 
@@ -63,6 +63,11 @@ function init() {
     newDiv.innerHTML = newTable;
     putEleBefore.parentElement.parentElement.insertBefore(newDiv, putEleBefore.parentElement);
 
+     if (localStorage.getItem('cooldownDuration')) {
+        cooldownDuration = parseInt(localStorage.getItem('cooldownDuration'), 10);
+        document.getElementById('CooldownInput').value = cooldownDuration / 60000; // Convert back to minutes for display
+    }
+
     eventListeners();
 
     if (localStorage.scriptStatus) {
@@ -72,6 +77,7 @@ function init() {
             startScript();
         }
     }
+
 
 }
 
@@ -111,6 +117,7 @@ document.getElementById("CooldownBtn").addEventListener("click", function () {
     let cDur = parseInt(document.getElementById("CooldownInput").value);
     if (!isNaN(cDur) && cDur > 0) {
         cooldownDuration = cDur * 60000
+        localStorage.setItem('cooldownDuration', cooldownDuration);
     } else {
         alert("Please enter a valid number");
     }
