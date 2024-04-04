@@ -2,7 +2,7 @@
 // @name         minter
 // @description  Automatically mint coins if there are resources
 // @author       cdneee
-// @version      1.0
+// @version      1.01
 // @include      https://*/game.php*=snob*
 // ==/UserScript==
 
@@ -32,7 +32,7 @@ setInterval(function() {
     document.querySelector('#coin_mint_count').value = coins;
     document.getElementsByClassName("btn btn-default")[0].click();
     }
-}, 7000);
+}, 1200000);
 
 function maxCoins(wood, stone, iron, woodPrice, stonePrice, ironPrice){
     var woodCoins = Math.floor(wood / woodPrice);
