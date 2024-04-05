@@ -2,7 +2,7 @@
 // @name         minter
 // @description  Automatically mint coins if there are resources
 // @author       cdneee
-// @version      1.11
+// @version      1.2
 // @include      https://*/game.php*=snob*
 // ==/UserScript==
 
@@ -11,13 +11,15 @@ let scriptStatus;
 let scriptRunningInterval;
 let cooldownDuration;
 
-/* Run every 7 seconds */
+
 function startScript(){
     scriptRunningInterval = setInterval(function() {
     if (!scriptStatus) {
         clearInterval(scriptRunningInterval);}
     else{
+        location.reload();
         var wood = resInfo("wood");
+        console.log(wood);
         var stone = resInfo("stone");
         var iron = resInfo("iron");
 
@@ -38,6 +40,7 @@ function startScript(){
         if(coins > 0){
             document.querySelector('#coin_mint_count').value = coins;
             document.getElementsByClassName("btn btn-default")[0].click();
+
         }
     }
     }, cooldownDuration);
@@ -63,12 +66,10 @@ function init() {
     newDiv.innerHTML = newTable;
     putEleBefore.parentElement.parentElement.insertBefore(newDiv, putEleBefore.parentElement);
 
-     if (localStorage.getItem('cooldownDuration')) {
-        cooldownDuration = parseInt(localStorage.getItem('cooldownDuration'), 10);
-        document.getElementById('CooldownInput').value = cooldownDuration / 60000; // Convert back to minutes for display
-    }
 
     eventListeners();
+    cooldownDuration = parseFloat(localStorage.getItem('cooldownDuration'), 10);
+    document.getElementById('CooldownInput').value = cooldownDuration / 60000; // Convert back to minutes for display
 
     if (localStorage.scriptStatus) {
         scriptStatus = JSON.parse(localStorage.scriptStatus);
@@ -114,7 +115,7 @@ function eventListeners() {
     });
 }
 document.getElementById("CooldownBtn").addEventListener("click", function () {
-    let cDur = parseInt(document.getElementById("CooldownInput").value);
+    let cDur = parseFloat(document.getElementById("CooldownInput").value);
     if (!isNaN(cDur) && cDur > 0) {
         cooldownDuration = cDur * 60000
         localStorage.setItem('cooldownDuration', cooldownDuration);
