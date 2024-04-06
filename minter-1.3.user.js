@@ -2,7 +2,7 @@
 // @name         minter
 // @description  Automatically mint coins if there are resources
 // @author       cdneee
-// @version      1.2
+// @version      1.3
 // @include      https://*/game.php*=snob*
 // ==/UserScript==
 
@@ -11,12 +11,16 @@ let scriptStatus;
 let scriptRunningInterval;
 let cooldownDuration;
 
+function updateHeartbeat() {
+    localStorage.setItem('scriptHeartbeat', Date.now().toString());
+}
 
 function startScript(){
     scriptRunningInterval = setInterval(function() {
     if (!scriptStatus) {
         clearInterval(scriptRunningInterval);}
     else{
+        updateHeartbeat()
         location.reload();
         var wood = resInfo("wood");
         console.log(wood);
@@ -82,6 +86,21 @@ function init() {
 
 }
 
+function monitorHeartbeat() {
+    const lastHeartbeat = parseInt(localStorage.getItem('scriptHeartbeat'), 10);
+    const now = Date.now();
+    // Check if the last heartbeat was more than X milliseconds ago
+    if (now - lastHeartbeat > cooldownDuration+2000) { // Example: 20 seconds
+        console.error('Main script has stopped. Attempting to restart.');
+        restartScript(); // Implement this function based on your needs
+    }
+}
+// Run the monitor function every 20 seconds
+setInterval(monitorHeartbeat, cooldownDuration+2000);
+
+function restartScript() {
+    location.reload(); // Force a page reload to restart everything
+}
 
 function maxCoins(wood, stone, iron, woodPrice, stonePrice, ironPrice){
     var woodCoins = Math.floor(wood / woodPrice);
