@@ -2,7 +2,7 @@
 // @name         minter
 // @description  Automatically mint coins if there are resources
 // @author       cdneee
-// @version      1.3.2
+// @version      1.4
 // @include      https://*/game.php*=snob*
 // ==/UserScript==
 
@@ -20,7 +20,6 @@ function startScript(){
     if (!scriptStatus) {
         clearInterval(scriptRunningInterval);}
     else{
-        updateHeartbeat();
         location.reload();
         var wood = resInfo("wood");
         var stone = resInfo("stone");
@@ -43,6 +42,7 @@ function startScript(){
         if(coins > 0){
             document.querySelector('#coin_mint_count').value = coins;
             document.getElementsByClassName("btn btn-default")[0].click();
+            updateHeartbeat();
 
         }
     }
@@ -89,16 +89,17 @@ function monitorHeartbeat() {
     const lastHeartbeat = parseInt(localStorage.getItem('scriptHeartbeat'), 10);
     const now = Date.now();
     // Check if the last heartbeat was more than X milliseconds ago
-    if (now - lastHeartbeat > cooldownDuration+2000) {
+    if (now - lastHeartbeat > cooldownDuration+2000) { // Example: 20 seconds
         console.error('Main script has stopped. Attempting to restart.');
-        location.reload();
-}}
+        restartScript(); // Implement this function based on your needs
+    }
+}
 // Run the monitor function every 20 seconds
-if (!scriptStatus) {
-        clearInterval(scriptRunningInterval);}
-else{
-        setInterval(monitorHeartbeat, cooldownDuration+2000);}
+setInterval(monitorHeartbeat, 600000);
 
+function restartScript() {
+    location.reload(); // Force a page reload to restart everything
+}
 
 function maxCoins(wood, stone, iron, woodPrice, stonePrice, ironPrice){
     var woodCoins = Math.floor(wood / woodPrice);
@@ -156,4 +157,5 @@ function resInfo(res) {
             break;
     }
     var inVillage = parseInt(document.getElementById(res).innerText);
-    return inVillage;}
+    return inVillage;
+}
